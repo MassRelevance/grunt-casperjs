@@ -1,40 +1,24 @@
 exports.init = function(grunt) {
   var exports = {};
-  
+  var _ = grunt.util._;
+  var util = require('util');
+
   exports.casperjs = function(filepath, options, callback) {
 
     var command = 'casperjs test',
         exec = require('child_process').exec;
 
-    // Add options documented in the following web site:
-    //   http://casperjs.org/testing.html
-    if (options.xunit) {
-      command += ' --xunit=' + options.xunit;
-    }
-
-    if (options.direct) {
-      command += ' --direct';
-    }
-
-    if (options.includes) {
-      command += ' --includes=' + options.includes.join(',');
-    }
-
-    if (options.logLevel) {
-      command += ' --log-level=' + options.logLevel;
-    }
-    
-    if (options.engine) {
-      command += ' --engine=' + options.engine;
-    }
-
-    if (options.pre) {
-      command += ' --pre=' + options.pre.join(',');
-    }
-
-    if (options.post) {
-      command += ' --post=' + options.post.join(',');
-    }
+    _(options).each(function (value, key) {
+      if (_.isArray(value)) {
+        command += util.format(' --%s="%s"', key, value.join(','));
+      }
+      else if (_.isString(value)) {
+        command += util.format(' --%s="%s"', key, value);
+      }
+      else if (_.isBoolean(value) && value) {
+        command += util.format(' --%s', key);
+      }
+    });
 
     command += " " + filepath;
 
@@ -52,8 +36,8 @@ exports.init = function(grunt) {
     }
 
     exec(command, puts);
-    
+
   };
-  
+
   return exports;
 };
