@@ -12,7 +12,7 @@ exports.init = function(grunt) {
       if (_.isArray(value)) {
         command += util.format(' --%s="%s"', key, value.join(','));
       }
-      else if (_.isString(value)) {
+      else if (_.isString(value) || _.isNumber(value)) {
         command += util.format(' --%s="%s"', key, value);
       }
       else if (_.isBoolean(value) && value) {
